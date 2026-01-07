@@ -1,40 +1,49 @@
+class Piece {
+    constructor(type, square){
+        this.type = type;
+        this.square = square;
+    }
+}
+
 class Square {
-    constructor(piece, file, rank){
-        this.piece = piece;
+    constructor(file, rank){
+        this.piece = undefined;
         this.file = file;
         this.rank = rank;
         this.coordinates = file + rank;
     }
+    isEmpty(){ return !!this.piece; }
 }
 class Face {
     constructor(id, size){
         this.id = id;
         this.size = size;
-        this.board = this.createBoard;
+        this.board = this.createBoard();
     }
     createBoard(){
         let board = [];
         for (let r = 0; r < this.size; r++){
-            this.board.append(this.createRow(r));
+            board.push(this.createRank(r));
         }
         return board;
     }
-    createRow(rank){
+    createRank(r){
         let row = [];
         for (let f = 0; f < this.size; f++){
-            row.append(new Square(undefined, f, rank));
+            row.push(new Square(f, r));
         }
         return row;
     }
 }
-class Cube {
-    constructor(numFaces, faceSize){
-        this.faces = [];
-        for (let i = 0; i < numFaces; i++){
-            this.faces.append(new Face(i, faceSize));
-        }
+export class Cube {
+    constructor(faceSize){
+        this.faces = this.createFaces(faceSize);
     }
-    createFace(id){
-        
+    createFaces(size){
+        let faces = [];
+        for (let i = 0; i < 6; i++){
+            faces.push(new Face(i, size));
+        }
+        return faces;
     }
 }

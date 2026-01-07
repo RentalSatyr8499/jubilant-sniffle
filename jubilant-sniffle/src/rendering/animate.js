@@ -1,3 +1,4 @@
+/* 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -16,10 +17,17 @@ const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true}
 const torus = new THREE.Mesh(geometry, material);
 const controls = new OrbitControls(camera, renderer.domElement);
 scene.add(torus);
+*/
+
+import { CubeRenderer } from "./CubeRenderer";
+import { GameRenderer } from "./GameRenderer";
+
+const gameRenderer = new GameRenderer();
+const cubeRenderer = new CubeRenderer(gameRenderer, 100);
+
+cubeRenderer.render();
 
 export function animate(){
-  requestAnimationFrame(animate);
-  torus.rotation.x += 0.01;
-  controls.update();
-  renderer.render(scene, camera); 
+    gameRenderer.animate();
+    requestAnimationFrame(animate);
 }
