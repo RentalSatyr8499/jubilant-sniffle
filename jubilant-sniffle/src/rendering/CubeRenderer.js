@@ -1,59 +1,59 @@
 import * as THREE from 'three';
 import { Cube } from '../state/Cube.js';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import config from './renderingConfig.json';
 
 export class CubeRenderer {
-  constructor(gameRenderer, edgeLen) {
-    this.numSquares = 8;
+  constructor(gameRenderer, edgeLen = config.cube.edgeLen) {
     this.gameRenderer = gameRenderer;
-    this.cube = new Cube(this.numSquares); 
-    this.edgeLen = edgeLen;
 
-    this.subcubes = []; 
-    this.subcubeSize = this.edgeLen/8;
+    this.edgeLen = edgeLen;
+    this.numSquares = config.cube.numSquares;
     this.faceOffset = this.edgeLen / 2;
     this.squareSize = this.edgeLen/this.numSquares;
+    this.positionOffset = config.cube.positionOffset;
 
+    this.cubeModel = new Cube(this.numSquares);
+    this.cubeMesh = this.createCubeMesh(); 
   }
 
-  render() {
-    const cube = new THREE.Group();
+    createCubeMesh() {
+        const cube = new THREE.Group();
 
-    this.cube.faces.forEach((face, f) => {
-        const currFace = new THREE.Group();
-        face.board.forEach((row, r) => {
-            const currRow = new THREE.Group();
-            row.forEach((subcube, s) => {
-                const currSubcube = this.createSubcubeMesh(this.squareSize);
-                this.positionSubcube(currSubcube, s);
-                currRow.add(currSubcube);                
+        this.cubeModel.faces.forEach((face, f) => {
+            const currFace = new THREE.Group();
+            face.board.forEach((row, r) => {
+                const currRow = new THREE.Group();
+                row.forEach((subcube, s) => {
+                    const currSubcube = this.createSubcubeMesh(this.squareSize);
+                    this.positionSubcube(currSubcube, s);
+                    currRow.add(currSubcube);                
+                });
+                this.positionRow(currRow, r);
+                currFace.add(currRow);
             });
-            this.positionRow(currRow, r);
-            currFace.add(currRow);
+            this.positionFace(currFace, f);
+            cube.add(currFace);         
         });
-        this.positionFace(currFace, f);
-        cube.add(currFace);         
-    });
-    // cube.add(this.createSubcubeMesh(this.subcubeSize));
 
-    this.gameRenderer.scene.add(cube);
+        this.gameRenderer.scene.add(cube);
+        return cube;
     }
-
-    createSubcubeMesh(size){
-        const geometry = new THREE.BoxGeometry(size, size, size);
-        const material = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                wireframe: true,
-            });
+    createSubcubeMesh(size) {
+        const radius = size * config.cube.cornerRadiusRatio; // ratio of size
+        const geometry = new RoundedBoxGeometry(size, size, size, config.cube.roundedSegments, radius);
+        const material = new THREE.MeshStandardMaterial({
+            color: config.cube.subcubeColor,
+        });
         return new THREE.Mesh(geometry, material);
+
     }
     positionSubcube(subcubeMesh, i) {
-        subcubeMesh.position.x = (i - this.numSquares / 2 + 0.5) * this.subcubeSize;
+        subcubeMesh.position.x = (i - this.numSquares / 2 + this.positionOffset) * this.squareSize;
     }
-
     positionRow(rowMesh, i) {
-        rowMesh.position.y = (i - this.numSquares / 2 + 0.5) * this.subcubeSize;
+        rowMesh.position.y = (i - this.numSquares / 2 + this.positionOffset) * this.squareSize;
     }
-
     positionFace(faceMesh, i){
         switch (i) {
             case 0: // front
