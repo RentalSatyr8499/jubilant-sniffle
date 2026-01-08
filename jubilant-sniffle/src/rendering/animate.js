@@ -3,11 +3,12 @@ import { GameRenderer } from "./GameRenderer";
 import config from './renderingConfig.json';
 
 const gameRenderer = new GameRenderer();
-const cubeRenderer = new CubeRenderer(gameRenderer, config.cube.edgeLen);
-
+let cubeRenderer = new CubeRenderer(gameRenderer);
 
 export function animate(){
-    cubeRenderer.cubeMesh.rotation.z += config.animation.rotationSpeedZ;
+    cubeRenderer.cubeMesh.rotation.z += 0.005;
+    cubeRenderer.cubeMesh.rotation.x += 0.005;
+
     gameRenderer.animate();
 
     requestAnimationFrame(animate);
