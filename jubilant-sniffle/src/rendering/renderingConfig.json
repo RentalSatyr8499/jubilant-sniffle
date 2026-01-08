@@ -20,7 +20,18 @@
     "subcubeColor": 16777215,
     "cornerRadiusRatio": 0.2,
     "roundedSegments": 4,
-    "positionOffset": 0.5
+    "positionOffset": 0.5,
+    "newFaceColors": {
+        "1": "#5bc0eb",
+        "2": "#fde74c",
+        "3": "#9bc53d",
+        "4": "#ba2d0b",
+        "5": "#fa7921",
+        "6": "#ffffff"
+    },
+    "stickerSize": 0.73,
+    "stickerOffset": 0.05,
+    "stickerDepth": 2
   },
   "animation": {
     "rotationSpeedZ": 0.005

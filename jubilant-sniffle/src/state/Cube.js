@@ -1,3 +1,5 @@
+import config from '../rendering/renderingConfig.json';
+
 class Piece {
     constructor(type, square){
         this.type = type;
@@ -6,11 +8,12 @@ class Piece {
 }
 
 class Square {
-    constructor(file, rank){
+    constructor(file, rank, color = "#ffffff"){
         this.piece = undefined;
         this.file = file;
         this.rank = rank;
         this.coordinates = file + rank;
+        this.color = color;
     }
     isEmpty(){ return !!this.piece; }
 }
@@ -18,6 +21,7 @@ class Face {
     constructor(id, size){
         this.id = id;
         this.size = size;
+        this.color = config.cube.newFaceColors[`${id}`];
         this.board = this.createBoard();
     }
     createBoard(){
@@ -30,7 +34,7 @@ class Face {
     createRank(r){
         let row = [];
         for (let f = 0; f < this.size; f++){
-            row.push(new Square(f, r));
+            row.push(new Square(f, r, this.color));
         }
         return row;
     }
@@ -41,7 +45,7 @@ export class Cube {
     }
     createFaces(size){
         let faces = [];
-        for (let i = 0; i < 6; i++){
+        for (let i = 1; i < 7; i++){
             faces.push(new Face(i, size));
         }
         return faces;

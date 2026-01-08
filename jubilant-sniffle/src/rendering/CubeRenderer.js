@@ -1,17 +1,17 @@
 import * as THREE from 'three';
-import { Cube } from '../state/Cube.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import config from './renderingConfig.json';
+import { sub } from 'three/tsl';
 
 export class CubeRenderer {
-  constructor(gameRenderer, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
+  constructor(gameRenderer, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
     this.gameRenderer = gameRenderer;
 
     this.edgeLen = edgeLen;
     this.numSquares = numSquares;
     this.squareSize = this.edgeLen/this.numSquares;
 
-    this.cubeModel = new Cube(this.numSquares);
+    this.cubeModel = cubeModel;
     this.cubeMesh = this.createCubeMesh(); 
   }
 
@@ -35,7 +35,8 @@ export class CubeRenderer {
                     const currRow = new THREE.Group();
                     row.forEach((subcube, s) => {
                         if (!onEdge(s)){
-                            const currSubcube = this.createSubcubeMesh(this.squareSize);
+                            const currSubcube = this.createSubcubeMesh(this.squareSize, subcube.color);
+                            console.log(subcube.color);
                             this.positionSubcube(currSubcube, s);
                             currRow.add(currSubcube);      
                         }        
@@ -79,14 +80,25 @@ export class CubeRenderer {
 
         cubeMesh.add(edgeMesh);
     }
-    createSubcubeMesh(size) {
-        const radius = size * config.cube.cornerRadiusRatio; // ratio of size
-        const geometry = new RoundedBoxGeometry(size, size, size, config.cube.roundedSegments, radius);
-        const material = new THREE.MeshStandardMaterial({
-            color: config.cube.subcubeColor,
-        });
-        return new THREE.Mesh(geometry, material);
+    createSubcubeMesh(size, cubeColor = "#ffffff") {    
+        const radius = size * config.cube.cornerRadiusRatio;
+        const cube = new THREE.Mesh( // cube
+            new RoundedBoxGeometry(size, size, size, config.cube.roundedSegments, radius),
+            new THREE.MeshStandardMaterial({color: config.cube.subcubeColor})
+        );
+        const sticker = new THREE.Mesh( // sticker
+            new THREE.PlaneGeometry(size*config.cube.stickerSize, size*config.cube.stickerSize), 
+            new THREE.MeshStandardMaterial({
+                color: cubeColor,
+                side: THREE.DoubleSide
+            }
+        ));
+        sticker.position.z = size / 2 + config.cube.stickerOffset;
 
+        const subCube = new THREE.Group();
+        subCube.add(cube);
+        subCube.add(sticker);
+        return subCube;
     }
     positionSubcube(subcubeMesh, i) {
         subcubeMesh.position.x = (i - this.numSquares / 2 + 0.5) * this.squareSize;
@@ -106,11 +118,11 @@ export class CubeRenderer {
                 break;
             case 2: // right
                 faceMesh.position.x = faceOffset;
-                faceMesh.rotation.y = -Math.PI / 2;
+                faceMesh.rotation.y = -3*Math.PI / 2;
                 break;
             case 3: // left
                 faceMesh.position.x = -faceOffset;
-                faceMesh.rotation.y = Math.PI / 2;
+                faceMesh.rotation.y = 3*Math.PI / 2;
                 break;
             case 4: // top
                 faceMesh.position.y = faceOffset;
