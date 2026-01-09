@@ -34,7 +34,8 @@
     "stickerDepth": 2
   },
   "piece": {
-    "pieceMeshDirectory": ".../public/models/pieces/"
+    "pieceMeshDirectory": "../public/models/pieces/",
+    "pieceSize": 0.5
   },
   "animation": {
     "rotationSpeedZ": 0.005

@@ -2,14 +2,14 @@ import config from '../rendering/renderingConfig.json';
 
 class Piece {
     constructor(type, square){
-        this.type = "pawn";
+        this.type = type;
         this.square = square;
     }
 }
 
 class Square {
     constructor(file, rank, color = "#ffffff"){
-        this.piece = undefined;
+        this.piece = "pawn";
         this.file = file;
         this.rank = rank;
         this.coordinates = file + rank;

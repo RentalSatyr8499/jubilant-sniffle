@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import config from './renderingConfig.json';
+import { loadMesh } from './modelLoader';
+import { scaleMeshToX } from './meshScaler';
 
 export class CubeRenderer {
   constructor(gameRenderer, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
@@ -29,7 +31,7 @@ export class CubeRenderer {
             face.board.forEach((row, r) => {
                 const currRow = new THREE.Group();
                 row.forEach((subcube, s) => {
-                        const currSubcube = this.createSubcubeMesh(this.squareSize, subcube.color);
+                        const currSubcube = this.createSubcubeMesh(this.squareSize, subcube);
                         this.positionSubcube(currSubcube, s);
                         currRow.add(currSubcube);      
                 });
@@ -60,31 +62,39 @@ export class CubeRenderer {
                             }
                         });
                     } else {
-                        console.log(false);
                         renderedSubcubes.add(key);
                     }
                 });
             });
         });
     }
-    createSubcubeMesh(size, cubeColor = "#ffffff") {    
+    createSubcubeMesh(size, squareModel) {    
+        const subCube = new THREE.Group();
+
         const radius = size * config.cube.cornerRadiusRatio;
         const cube = new THREE.Mesh( // cube
             new RoundedBoxGeometry(size, size, size, config.cube.roundedSegments, radius),
             new THREE.MeshStandardMaterial({color: config.cube.subcubeColor})
         );
+        subCube.add(cube);
+
         const sticker = new THREE.Mesh( // sticker
             new THREE.PlaneGeometry(size*config.cube.stickerSize, size*config.cube.stickerSize), 
             new THREE.MeshStandardMaterial({
-                color: cubeColor,
+                color: squareModel.color,
                 side: THREE.DoubleSide
             }
         ));
         sticker.position.z = size / 2 + config.cube.stickerOffset;
-
-        const subCube = new THREE.Group();
-        subCube.add(cube);
         subCube.add(sticker);
+
+        const path = config.piece.pieceMeshDirectory + squareModel.piece + ".glb";
+        console.log(path);
+        loadMesh(path).then((pieceMesh) => { // piece
+            pieceMesh.position.z = sticker.position.z;
+            subCube.add(scaleMeshToX(pieceMesh, size*config.piece.pieceSize));
+        });
+
         return subCube;
     }
     positionSubcube(subcubeMesh, i) {
