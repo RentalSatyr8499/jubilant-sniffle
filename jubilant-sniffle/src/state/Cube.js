@@ -2,7 +2,7 @@ import config from '../rendering/renderingConfig.json';
 
 class Piece {
     constructor(type, square){
-        this.type = type;
+        this.type = "pawn";
         this.square = square;
     }
 }

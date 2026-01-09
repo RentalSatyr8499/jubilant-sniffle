@@ -30,8 +30,11 @@
         "6": "#ffffff"
     },
     "stickerSize": 0.73,
-    "stickerOffset": 0.05,
+    "stickerOffset": 0.1,
     "stickerDepth": 2
+  },
+  "piece": {
+    "pieceMeshDirectory": ".../public/models/pieces/"
   },
   "animation": {
     "rotationSpeedZ": 0.005

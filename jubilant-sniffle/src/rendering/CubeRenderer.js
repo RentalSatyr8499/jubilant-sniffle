@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import config from './renderingConfig.json';
-import { sub } from 'three/tsl';
 
 export class CubeRenderer {
   constructor(gameRenderer, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
@@ -16,69 +15,57 @@ export class CubeRenderer {
   }
 
     createCubeMesh() {
-        const cube = new THREE.Group();
+        const cubeMesh = new THREE.Group();
 
-        this.populateNonEdgeCubes(cube);
-        this.populateEdgeCubes(cube);
+        this.createSubcubes(cubeMesh);
+        this.removeOverlappingCubes(cubeMesh);
 
-        this.gameRenderer.scene.add(cube);
-        return cube;
+        this.gameRenderer.scene.add(cubeMesh);
+        return cubeMesh;
     }
-    populateNonEdgeCubes(cubeMesh){
-        const onEdge = (i) => 
-            (i==0)||(i==this.cubeModel.faces[0].size-1);
-
+    createSubcubes(cubeMesh){
         this.cubeModel.faces.forEach((face, f) => {
             const currFace = new THREE.Group();
             face.board.forEach((row, r) => {
-                if (!onEdge(r)){
-                    const currRow = new THREE.Group();
-                    row.forEach((subcube, s) => {
-                        if (!onEdge(s)){
-                            const currSubcube = this.createSubcubeMesh(this.squareSize, subcube.color);
-                            console.log(subcube.color);
-                            this.positionSubcube(currSubcube, s);
-                            currRow.add(currSubcube);      
-                        }        
-                    });
-                    this.positionRow(currRow, r);
-                    currFace.add(currRow);
-                }
+                const currRow = new THREE.Group();
+                row.forEach((subcube, s) => {
+                        const currSubcube = this.createSubcubeMesh(this.squareSize, subcube.color);
+                        this.positionSubcube(currSubcube, s);
+                        currRow.add(currSubcube);      
+                });
+                this.positionRow(currRow, r);
+                currFace.add(currRow);
+                //}
             });
             this.positionFace(currFace, f);
             cubeMesh.add(currFace);         
         });
     }
-    populateEdgeCubes(cubeMesh) {
-        const edgeMesh = new THREE.Group();
+    removeOverlappingCubes(cubeMesh) {
+        const renderedSubcubes = new Set();
+        cubeMesh.children.forEach(face => {
+            face.children.forEach(row => {
+                row.children.forEach(subCube => {
+                    subCube.updateWorldMatrix(true, false);
+                    const pos = new THREE.Vector3();
+                    subCube.getWorldPosition(pos);
 
-        const cornerOffset = (this.edgeLen / 2) - (this.squareSize / 2);
-        const idxToCoord = (i) =>
-            (i - this.numSquares / 2 + 0.5) * this.squareSize;
-        const edgeCubes = [...Array(this.numSquares).keys()];
-        const edgePatterns = [
-            { free: 'x', fixed: ['y','z'] },
-            { free: 'y', fixed: ['x','z'] },
-            { free: 'z', fixed: ['x','y'] }
-        ];
-
-        edgePatterns.forEach(({ free, fixed }) => {
-            [ [-1,-1], [-1,1], [1,-1], [1,1] ].forEach(([s1, s2]) => {
-                edgeCubes.forEach(i => {
-                    const sub = this.createSubcubeMesh(this.squareSize);
-                    const pos = { x:0, y:0, z:0 };
-
-                    pos[free] = idxToCoord(i);
-                    pos[fixed[0]] = s1 * cornerOffset;
-                    pos[fixed[1]] = s2 * cornerOffset;
-
-                    sub.position.set(pos.x, pos.y, pos.z);
-                    edgeMesh.add(sub);
+                    const key = `${pos.x.toFixed(5)},${pos.y.toFixed(5)},${pos.z.toFixed(5)}`;
+                    if (renderedSubcubes.has(key)) {
+                        subCube.children.forEach(child => {
+                            if (child.geometry instanceof RoundedBoxGeometry) {
+                                subCube.remove(child);
+                                child.geometry.dispose();
+                                child.material.dispose();
+                            }
+                        });
+                    } else {
+                        console.log(false);
+                        renderedSubcubes.add(key);
+                    }
                 });
             });
         });
-
-        cubeMesh.add(edgeMesh);
     }
     createSubcubeMesh(size, cubeColor = "#ffffff") {    
         const radius = size * config.cube.cornerRadiusRatio;
