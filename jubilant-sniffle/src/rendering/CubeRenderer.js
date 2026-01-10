@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import config from './renderingConfig.json';
-import { loadMesh } from './modelLoader';
-import { scaleMeshToX } from './meshScaler';
+import { loadMesh, setMeshColor, scaleMeshToX } from './meshUtils';
 
 export class CubeRenderer {
   constructor(gameRenderer, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
@@ -81,20 +80,22 @@ export class CubeRenderer {
         const sticker = new THREE.Mesh( // sticker
             new THREE.PlaneGeometry(size*config.cube.stickerSize, size*config.cube.stickerSize), 
             new THREE.MeshStandardMaterial({
-                color: squareModel.color,
+                color: config.cube.stickerColors[squareModel.color],
                 side: THREE.DoubleSide
             }
         ));
         sticker.position.z = size / 2 + config.cube.stickerOffset;
         subCube.add(sticker);
 
-        const path = config.piece.pieceMeshDirectory + squareModel.piece + ".glb";
-        console.log(path);
-        loadMesh(path).then((pieceMesh) => { // piece
-            pieceMesh.position.z = sticker.position.z;
-            subCube.add(scaleMeshToX(pieceMesh, size*config.piece.pieceSize));
-        });
-
+        if (!squareModel.isEmpty()){
+            const path = config.piece.pieceMeshDirectory + squareModel.piece.type + ".glb";
+            loadMesh(path).then((pieceMesh) => { // piece
+                pieceMesh.position.z = sticker.position.z;
+                subCube.add(scaleMeshToX(pieceMesh, size*config.piece.pieceSize));
+                setMeshColor(pieceMesh, config.piece.colors[squareModel.piece.color]);
+            });
+        }
+        
         return subCube;
     }
     positionSubcube(subcubeMesh, i) {
