@@ -27,13 +27,25 @@ pawnRank(startingFace.board[1], "white");
 pawnRank(startingFace.board[6], "black");
 
 // switch king and queen for black
-startingFace.board[7][4].type = "queen";
-console.log(startingFace.board[7][3]);
-startingFace.board[7][3].type = "king"; 
-console.log(startingFace.board[7][3]);
-// this code is not working for some reason
+startingFace.board[7][4].piece.type = "king";
+startingFace.board[7][3].piece.type = "queen"; 
 
-console.log(starterCube.toJSON());
+function downloadJSON(obj, filename = "start.json") {
+  const jsonString = JSON.stringify(obj, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+// Usage
+downloadJSON(starterCube.toJSON(), "start.json");
+
 // next: download json and keep in public/
 // then read from it upon creating a new game
 // then do some shading work (can't really see the black pieces)
@@ -41,7 +53,8 @@ console.log(starterCube.toJSON());
 
 
 const gameRenderer = new GameRenderer();
-let cubeRenderer = new CubeRenderer(gameRenderer, starterCube);
+const game = new Game();
+let cubeRenderer = new CubeRenderer(gameRenderer, game.state);
 cubeRenderer.cubeMesh.rotation.x += Math.PI/2;
 cubeRenderer.cubeMesh.rotation.y += Math.PI;
 
