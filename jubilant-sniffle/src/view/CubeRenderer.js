@@ -4,8 +4,8 @@ import config from './renderingConfig.json';
 import { loadMesh, setMeshColor, scaleMeshToX } from './meshUtils';
 
 export class CubeRenderer {
-  constructor(gameRenderer, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
-    this.gameRenderer = gameRenderer;
+  constructor(sceneAdapter, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
+    this.sceneAdapter = sceneAdapter;
 
     this.edgeLen = edgeLen;
     this.numSquares = numSquares;
@@ -21,7 +21,7 @@ export class CubeRenderer {
         this.createSubcubes(cubeMesh);
         this.removeOverlappingCubes(cubeMesh);
 
-        this.gameRenderer.scene.add(cubeMesh);
+        this.sceneAdapter.scene.add(cubeMesh);
         return cubeMesh;
     }
     createSubcubes(cubeMesh){
@@ -107,8 +107,9 @@ export class CubeRenderer {
     positionFace(faceMesh, i){
         const faceOffset = (this.edgeLen / 2) - (this.squareSize / 2);
         switch (i) {
-            case 0: // front
-                faceMesh.position.z = faceOffset;
+            case 0: // top
+                faceMesh.position.y = faceOffset;
+                faceMesh.rotation.x = -Math.PI / 2;
                 break;
             case 1: // back
                 faceMesh.position.z = -faceOffset;
@@ -122,9 +123,8 @@ export class CubeRenderer {
                 faceMesh.position.x = -faceOffset;
                 faceMesh.rotation.y = 3*Math.PI / 2;
                 break;
-            case 4: // top
-                faceMesh.position.y = faceOffset;
-                faceMesh.rotation.x = -Math.PI / 2;
+            case 4: // front
+                faceMesh.position.z = faceOffset;
                 break;
             case 5: // bottom
                 faceMesh.position.y = -faceOffset;
