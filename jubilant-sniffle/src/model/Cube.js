@@ -74,5 +74,6 @@ export class Cube {
             }
             }
         });
+        return this;
     }
 }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import config from './renderingConfig.json';
-export class GameRenderer {
+export class GameRenderer{
     constructor(){
         this.scene = new THREE.Scene();
         this.camera = this.createCamera();
@@ -35,5 +35,8 @@ export class GameRenderer {
         const dirLight = new THREE.DirectionalLight(config.lighting.directional.color, config.lighting.directional.intensity);
         dirLight.position.set(config.lighting.directional.position.x, config.lighting.directional.position.y, config.lighting.directional.position.z);
         scene.add(dirLight);
+    }
+    render() {
+        this.renderer.render(this.scene, this.camera);
     }
 }

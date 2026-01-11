@@ -1,4 +1,8 @@
 import './style.css'
-import { animate } from './rendering/animate.js';
+// import { animate } from './view/animate.js';
+import { Game } from './Game.js';
 
-animate();
+const game = new Game();
+await game.init();
+
+// animate();
