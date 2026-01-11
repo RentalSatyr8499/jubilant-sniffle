@@ -9,7 +9,11 @@ export class GameRenderer{
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         this.addLights(this.scene);
-        this.scene.add(new THREE.AxesHelper(config.cube.edgeLen));
+    }
+    showBoardView(){
+        const c = config.camera.boardView;
+        this.camera.position.set(c.position.x, c.position.y, c.position.z);
+        this.camera.lookAt(c.lookAt.x, c.lookAt.y, c.lookAt.z);
     }
     animate(){
         this.controls.update();
@@ -39,4 +43,5 @@ export class GameRenderer{
     render() {
         this.renderer.render(this.scene, this.camera);
     }
+
 }
