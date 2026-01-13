@@ -3,7 +3,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import config from './renderingConfig.json';
 import { loadMesh, setMeshColor, scaleMeshToX } from './meshUtils';
 
-export class CubeRenderer {
+export class CubeView {
   constructor(sceneAdapter, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
     this.sceneAdapter = sceneAdapter;
 
@@ -42,31 +42,6 @@ export class CubeRenderer {
             cubeMesh.add(currFace);         
         });
     }
-    removeOverlappingCubes(cubeMesh) {
-        const renderedSubcubes = new Set();
-        cubeMesh.children.forEach(face => {
-            face.children.forEach(row => {
-                row.children.forEach(subCube => {
-                    subCube.updateWorldMatrix(true, false);
-                    const pos = new THREE.Vector3();
-                    subCube.getWorldPosition(pos);
-
-                    const key = `${pos.x.toFixed(5)},${pos.y.toFixed(5)},${pos.z.toFixed(5)}`;
-                    if (renderedSubcubes.has(key)) {
-                        subCube.children.forEach(child => {
-                            if (child.geometry instanceof RoundedBoxGeometry) {
-                                subCube.remove(child);
-                                child.geometry.dispose();
-                                child.material.dispose();
-                            }
-                        });
-                    } else {
-                        renderedSubcubes.add(key);
-                    }
-                });
-            });
-        });
-    }
     createSubcubeMesh(size, squareModel) {    
         const subCube = new THREE.Group();
 
@@ -97,6 +72,31 @@ export class CubeRenderer {
         }
         
         return subCube;
+    }
+    removeOverlappingCubes(cubeMesh) {
+        const renderedSubcubes = new Set();
+        cubeMesh.children.forEach(face => {
+            face.children.forEach(row => {
+                row.children.forEach(subCube => {
+                    subCube.updateWorldMatrix(true, false);
+                    const pos = new THREE.Vector3();
+                    subCube.getWorldPosition(pos);
+
+                    const key = `${pos.x.toFixed(5)},${pos.y.toFixed(5)},${pos.z.toFixed(5)}`;
+                    if (renderedSubcubes.has(key)) {
+                        subCube.children.forEach(child => {
+                            if (child.geometry instanceof RoundedBoxGeometry) {
+                                subCube.remove(child);
+                                child.geometry.dispose();
+                                child.material.dispose();
+                            }
+                        });
+                    } else {
+                        renderedSubcubes.add(key);
+                    }
+                });
+            });
+        });
     }
     positionSubcube(subcubeMesh, i) {
         subcubeMesh.position.x = (i - this.numSquares / 2 + 0.5) * this.squareSize;

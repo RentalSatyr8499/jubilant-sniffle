@@ -1,19 +1,17 @@
-import { HoverHighlighter } from "./HoverHighlighter";
-import * as THREE from 'three';
+import { HoverSelectionController } from "./HoverSelectionController";
+import { HighlightView } from "../view/HighlightView";
 
-export class GameController{
-    constructor(hitTest){
-        this.highlighter = new HoverHighlighter(
-            hitTest,
-            new THREE.MeshBasicMaterial({
-                color: 0xffff00,
-                transparent: true,
-                opacity: 0.5
-            })
-        );
+export class GameController {
+  constructor(hitTest) {
+    this.highlightView = new HighlightView();
 
-    }
-    update(){
-        this.highlighter.update();
-    }
+    this.hoverController = new HoverSelectionController(
+      hitTest,
+      (prev, next) => this.highlightView.setHighlighted(next)
+    );
+  }
+
+  update() {
+    this.hoverController.update();
+  }
 }

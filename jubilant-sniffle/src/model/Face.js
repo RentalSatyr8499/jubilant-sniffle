@@ -1,12 +1,5 @@
-import config from './stateConfig.json';
-
-export class Piece {
-    constructor(type, square, color){
-        this.type = type;
-        this.square = square;
-        this.color = color;
-    }
-}
+import config from './modelConfig.json';
+import { Piece } from './Piece'
 
 class Square {
     constructor(file, rank, color = "#ffffff"){

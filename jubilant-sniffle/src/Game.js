@@ -1,7 +1,7 @@
 import config from './view/renderingConfig.json';
 import { Cube } from './model/Cube';
 import { GameRenderer } from './view/GameRenderer';
-import { CubeRenderer } from './view/CubeRenderer';
+import { CubeView } from './view/CubeView';
 import { GameController } from './controller/GameController';
 import { hitTestFactory } from './view/HitTestFactory';
 
@@ -20,11 +20,11 @@ export class Game {
     this.state = (new Cube(config.cube.numSquares)).fromJSON(obj); // M
 
     this.renderer = new GameRenderer();
-    this.cubeRenderer = new CubeRenderer(this.renderer, this.state); // V
+    this.cubeRenderer = new CubeView(this.renderer, this.state); // V
     this.renderer.showBoardView();
 
     // 3) set up controller
-    this.controller = new GameController(hitTestFactory(this.camera, this.scene));
+    this.controller = new GameController(hitTestFactory(this.renderer.camera, this.renderer.scene));
   
     // 4) start loop
     this.start();
@@ -35,6 +35,7 @@ export class Game {
       // this.state.update();
       // this.cubeRenderer.updateFromState();
       this.renderer.render();
+      this.controller.update();
       requestAnimationFrame(loop);
     };
     loop();

@@ -1,5 +1,5 @@
 import { Face } from "./Face";
-import config from "./stateConfig.json";
+import config from "./modelConfig.json";
 
 export class Cube {
     constructor(faceSize){
