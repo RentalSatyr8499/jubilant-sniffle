@@ -1,19 +1,25 @@
 import * as THREE from 'three';
-// some sort of helper class that wraps around moves?
+import { getStickerFromSubcube } from './meshUtils';
 
-export class MoveView{
-    constructor(cube, move){
-        this.cube = cube;
-        this.move = move;
+export class MoveView {
+    constructor(cubeView) {
+        this.cubeView = cubeView;
     }
-    setValidMoves(){
-        const possibleSquares = this.move.piece.getPossibleSquares(this.cube.board);
-        possibleSquares.forEach( (move, m) => {
-            // get sticker mesh somehow?..
-            // add a gray circle to the middle of planar sticker mesh
-        })
-    }
-    setValidAttacks(){
-        // follow setValidMoves structure but for attacks
+
+    showValidMoves(moves) {
+        moves.forEach(square => {
+
+            const sticker = getStickerFromSubcube(this.cubeView.modelToMesh.get(square));
+
+            if (!sticker) return;
+
+            const indicator = new THREE.Mesh(
+                new THREE.CircleGeometry(0.2),
+                new THREE.MeshBasicMaterial({ color: 0x888888 })
+            );
+
+            indicator.position.set(0,0,0.01);
+            sticker.add(indicator);
+        });
     }
 }

@@ -6,6 +6,7 @@ import { loadMesh, setMeshColor, scaleMeshToX } from './meshUtils';
 export class CubeView {
   constructor(sceneAdapter, cubeModel, edgeLen = config.cube.edgeLen, numSquares = config.cube.numSquares) {
     this.sceneAdapter = sceneAdapter;
+    this.modelToMesh = new Map();
 
     this.edgeLen = edgeLen;
     this.numSquares = numSquares;
@@ -70,7 +71,8 @@ export class CubeView {
                 setMeshColor(pieceMesh, config.piece.colors[squareModel.piece.color]);
             });
         }
-        
+
+        this.modelToMesh.set(squareModel, subCube);
         return subCube;
     }
     removeOverlappingCubes(cubeMesh) {
@@ -111,11 +113,11 @@ export class CubeView {
                 faceMesh.position.y = faceOffset;
                 faceMesh.rotation.x = -Math.PI / 2;
                 break;
-            case 1: // back
+            case 5: // back
                 faceMesh.position.z = -faceOffset;
                 faceMesh.rotation.y = Math.PI;
                 break;
-            case 2: // right
+            case 1: // right
                 faceMesh.position.x = faceOffset;
                 faceMesh.rotation.y = -3*Math.PI / 2;
                 break;
@@ -126,7 +128,7 @@ export class CubeView {
             case 4: // front
                 faceMesh.position.z = faceOffset;
                 break;
-            case 5: // bottom
+            case 2: // bottom
                 faceMesh.position.y = -faceOffset;
                 faceMesh.rotation.x = Math.PI / 2;
                 break;

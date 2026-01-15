@@ -5,6 +5,8 @@ import { CubeView } from './view/CubeView';
 import { GameController } from './controller/GameController';
 import { hitTestFactory } from './view/HitTestFactory';
 
+import { MoveView } from './view/MoveView';
+
 
 export class Game {
   constructor() {
@@ -38,6 +40,9 @@ export class Game {
       this.controller.update();
       requestAnimationFrame(loop);
     };
+
+    const q = this.state.faces[0].board[0][4].piece;
+    // (new MoveView(this.cubeRenderer)).showValidMoves(q.getPossibleSquares(this.state.faces[0].board));
     loop();
   }
 }

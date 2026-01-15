@@ -1,7 +1,4 @@
 {
-    "setup":{
-
-    },
     "newFaceColors": {
         "1": "blue",
         "2": "yellow",
@@ -71,6 +68,43 @@
         "pawn": {
         "type": "special"
         }
+    },
+    "faceNeighbors": {
+        "1": {
+            "right": { "face": 2, "rotation": -90 },
+            "left":  { "face": 4, "rotation": 90 },
+            "up":    { "face": 6, "rotation": 180 },
+            "down":  { "face": 5, "rotation": 0 }
+        },
+        "2": {
+            "right": { "face": 6, "rotation": 0 },
+            "left":  { "face": 5, "rotation": 0 },
+            "up":    { "face": 1, "rotation": 90 },
+            "down":  { "face": 3, "rotation": -90 }
+        },
+        "3": {
+            "right": { "face": 2, "rotation": 90 },
+            "left":  { "face": 4, "rotation": -90 },
+            "up":    { "face": 5, "rotation": 0 },
+            "down":  { "face": 6, "rotation": 180 }
+        },
+        "4": {
+            "right": { "face": 5, "rotation": 0 },
+            "left":  { "face": 6, "rotation": 0 },
+            "up":    { "face": 1, "rotation": 180 },
+            "down":  { "face": 3, "rotation": 90 }
+        },
+        "5": {
+            "right": { "face": 2, "rotation": 0 },
+            "left":  { "face": 4, "rotation": 0 },
+            "up":    { "face": 1, "rotation": 0 },
+            "down":  { "face": 3, "rotation": 0 }
+        },
+        "6": {
+            "right": { "face": 4, "rotation": 0 },
+            "left":  { "face": 2, "rotation": 0 },
+            "up":    { "face": 1, "rotation": -180 },
+            "down":  { "face": 3, "rotation": -180 }
+        }
     }
-
 }

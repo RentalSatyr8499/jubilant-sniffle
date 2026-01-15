@@ -36,25 +36,26 @@ export class Piece {
 
     getRayMoves(directions, board) {
         const moves = [];
-        for (const [dr, dc] of directions) {
-            let step = 1;
-            while (true) {
-                const target = this.square.offset(dr * step, dc * step);
-                if (!target.isValid()) break;
 
-                if (board.isEmpty(target)) {
-                    moves.push(target);
-                } else {
-                    if (!board.isFriendly(target, this.color)) {
-                        moves.push(target);
-                    }
-                    break;
-                }
-                step++;
+        for (const [dx, dy] of directions) {
+            let step = 1;
+
+            while (true) {
+            const target = this.square.add(dx * step, dy * step);
+
+            if (!board.isInside(target)) break;
+
+            moves.push(target);
+
+            if (board.isOccupied(target)) break; // stop through pieces
+
+            step++;
             }
         }
+
         return moves;
-    }
+        }
+
 
     getPawnMoves(board) {
         return [];

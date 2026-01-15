@@ -56,3 +56,11 @@ export function setMeshColor(mesh, targetColor) {
   });
 }
 
+export function getStickerFromSubcube(subcubeGroup) {
+    for (const child of subcubeGroup.children) {
+        if (child instanceof THREE.Mesh && child.geometry instanceof THREE.PlaneGeometry) {
+            return child;
+        }
+    }
+    return null;
+}
