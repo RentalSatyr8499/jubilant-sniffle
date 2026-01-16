@@ -1,8 +1,10 @@
 # Rubiks Chess
 This is an ongoing personal project to create a web-based game that allows you to play chess on a Rubik's cube!
 
-![demo](https://i.imgur.com/FAtQZMp.mp4)
-Current progress on the project. Working on adding the ability to move pieces next!
+<p align="center">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExazlkamZ5M2tucWQ2MGNqYmM3eG1tY2VlcjZuZG84dnpuZDkyZWswdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1zxn6X3vUkKIKwMukb/giphy.gif" width="300">
+</p>
+<p style="text-align: center;">Current progress on the project. Working on adding the ability to move pieces next!</p>
 
 This is an exercise in MVC architecture. It uses the THREE.js library for rendering and will probably have a backend on fly.io for multiplayer functionality. I also hope to have an AI player at some point too. 
 
