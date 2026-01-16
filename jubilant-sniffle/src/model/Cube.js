@@ -9,58 +9,27 @@ export class Cube {
     createFaces(size){
         let faces = [];
         for (let i = 1; i < 7; i++){
-            faces.push(new Face(i, size));
+            faces.push(new Face(i, size, this));
         }
         return faces;
     }
     getRelativeSquare(square, dx, dy) {
-        const face = square.face;
-        const size = face.size;
+        let current = square;
 
-        let nx = square.file + dx;
-        let ny = square.rank + dy;
+        const stepX = Math.sign(dx);
+        const stepY = Math.sign(dy);
 
-        // 1. If still inside the same face, return directly
-        if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
-            return face.board[ny][nx];
+        for (let i = 0; i < Math.abs(dx); i++) {
+            current = current.face.stepFrom(current, stepX, 0);
         }
 
-        // 2. Determine which edge was crossed
-        let direction = null;
+        for (let i = 0; i < Math.abs(dy); i++) {
+            current = current.face.stepFrom(current, 0, stepY);
+        }
 
-        if (nx < 0) direction = "left";
-        else if (nx >= size) direction = "right";
-        else if (ny < 0) direction = "up";
-        else if (ny >= size) direction = "down";
-
-        if (!direction) return null; // shouldn't happen
-    
-        // the following code is wrong because it doesn't account for cases where the relative square lives multiple faces away.
-        // also maybe the task of getting neighboring faces should be delegated to Face.js.
-        /*
-        // 3. Look up neighbor face + rotation
-        const neighbor = config.faceNeighbors[face.id][direction];
-        const newFaceId = neighbor.face;
-        const rotation = neighbor.rotation;
-
-        const newFace = this.faces[newFaceId - 1]; // faces are 1-indexed in config
-
-        // 4. Compute coordinates relative to the edge
-        let localX = nx;
-        let localY = ny;
-
-        // Move into the coordinate space where (0..size-1) is valid
-        if (direction === "left")  localX = size - 1;
-        if (direction === "right") localX = 0;
-        if (direction === "up")    localY = size - 1;
-        if (direction === "down")  localY = 0;
-
-        // 5. Apply rotation to map coordinates onto the new face
-        let [fx, fy] = this.applyRotation(localX, localY, size, rotation);
-
-        return newFace.board[fy][fx];
-        */
+        return current;
     }
+
 
     toJSON(){
         let json = {

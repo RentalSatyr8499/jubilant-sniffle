@@ -6,6 +6,7 @@ import { GameController } from './controller/GameController';
 import { hitTestFactory } from './view/HitTestFactory';
 
 import { MoveView } from './view/MoveView';
+import { cubeMapNode } from 'three/src/nodes/utils/CubeMapNode.js';
 
 
 export class Game {
@@ -38,6 +39,8 @@ export class Game {
       // this.cubeRenderer.updateFromState();
       this.renderer.render();
       this.controller.update();
+      console.log(this.cubeRenderer.cubeMesh);
+      this.cubeRenderer.cubeMesh.rotation.y += 0.005;
       requestAnimationFrame(loop);
     };
 
