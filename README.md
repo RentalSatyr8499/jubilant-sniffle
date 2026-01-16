@@ -5,7 +5,7 @@ This is an ongoing personal project to create a web-based game that allows you t
   <img src="./README-demo.gif" width="300">
 </p>
 
-<p style="text-align: center;">Current progress on the project. Working on adding the ability to move pieces next!</p>
+<p style="text-align: center;">Above is the current progress on the project. Working on adding the ability to move pieces next!</p>
 
 This is an exercise in MVC architecture. It uses the THREE.js library for rendering and will probably have a backend on fly.io for multiplayer functionality. I also hope to have an AI player at some point too. 
 
