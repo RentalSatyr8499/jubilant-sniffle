@@ -2,7 +2,7 @@
 This is an ongoing personal project to create a web-based game that allows you to play chess on a Rubik's cube!
 
 <p align="center">
-  <img src="https://media.giphy.com/media/1zxn6X3vUkKIKwMukb/giphy.gif" width="300">
+  <img src="./README-demo.gif" width="300">
 </p>
 
 <p style="text-align: center;">Current progress on the project. Working on adding the ability to move pieces next!</p>
